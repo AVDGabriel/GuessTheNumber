@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, StyleSheet, Button, Image } from 'react-native';
+import { View, StyleSheet, Button, Image, Text } from 'react-native';
 import BodyText from '../components/BodyText';
 import TitleText from '../components/TitleText';
+import Colors from '../constants/colors';
 
 const GameOverScreen = props => {
 
@@ -21,12 +22,11 @@ const GameOverScreen = props => {
                     source={{ uri: 'https://png.pngtree.com/png-vector/20200601/ourmid/pngtree-game-over-illustration-for-t-shirt-design-png-image_2217283.jpg' }}
                     style={styles.image} resizeMode='cover' />
             </View>
-            <BodyText>
-                Number of rounds: {roundsNumber}
-            </BodyText>
-            <BodyText>
-                Number was: {userNumber}
-            </BodyText>
+            <View style={styles.resultContainer}>
+                <BodyText style={styles.resultText}>
+                    Your phone needed <Text style={styles.highlight}>{roundsNumber}</Text> rounds to guess the number <Text style={styles.highlight}>{userNumber}</Text>
+                </BodyText>
+            </View>
             <Button title="RESTART" onPress={onRestart} />
         </View>
     );
@@ -51,6 +51,19 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%'
     },
+    highlight: {
+        color: Colors.primary,
+        fontFamily: 'open-sans-bold'
+    },
+    resultContainer: {
+        // width: "80%",
+        marginHorizontal: 50,
+        marginVertical: 15,
+    },
+    resultText: {
+        textAlign: 'center',
+        fontSize: 20
+    }
 });
 
 export default GameOverScreen;
