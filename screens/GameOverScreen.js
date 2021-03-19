@@ -15,7 +15,11 @@ const GameOverScreen = props => {
             </TitleText>
             <View style={styles.imageContainer}>
                 {/** Local images are loaded with the required function. */}
-                <Image source={require('../assets/success.png')} style={styles.image} resizeMode='cover' />
+                {/* <Image source={require('../assets/success.png')} style={styles.image} resizeMode='cover' /> */}
+                <Image
+                    fadeDuration={2000}
+                    source={{ uri: 'https://png.pngtree.com/png-vector/20200601/ourmid/pngtree-game-over-illustration-for-t-shirt-design-png-image_2217283.jpg' }}
+                    style={styles.image} resizeMode='cover' />
             </View>
             <BodyText>
                 Number of rounds: {roundsNumber}
