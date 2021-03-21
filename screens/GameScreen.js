@@ -1,12 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    Alert,
+    FlatList
+} from 'react-native';
 import NumberContainer from '../components/NumberContainer';
 import Card from '../components/Card';
 import DefaultStyles from '../constants/default-styles';
 import MainButton from '../components/MainButton';
 import BodyText from '../components/BodyText';
 import { Ionicons } from '@expo/vector-icons';
-import { ScrollView } from 'react-native';
 
 const generateRandomBetween = (min, max, exclude) => {
     min = Math.ceil(min);
@@ -19,12 +24,13 @@ const generateRandomBetween = (min, max, exclude) => {
     }
 };
 
-const renderListItem = (value, numOfRound) => (<View key={value} style={styles.listItem}>
-    <BodyText>#{numOfRound}</BodyText>
-    <BodyText>
-        {value}
-    </BodyText>
-</View>);
+const renderListItem = (listLength, itemData) => (
+    <View style={styles.listItem}>
+        <BodyText>#{listLength - itemData.index}</BodyText>
+        <BodyText>
+            {itemData.item}
+        </BodyText>
+    </View>);
 
 const GameScreen = props => {
     //Object destructuring.
@@ -33,7 +39,7 @@ const GameScreen = props => {
     const initialGuess = generateRandomBetween(1, 100, userChoice);
     const [currentGuess, setCurrentGuess] =
         useState(initialGuess);
-    const [pastGuesses, setPastGuesses] = useState([initialGuess]);
+    const [pastGuesses, setPastGuesses] = useState([initialGuess.toString()]);
     const currentLow = useRef(1);
     const currentHigh = useRef(100);
 
@@ -62,7 +68,7 @@ const GameScreen = props => {
         }
         const nextNumber = generateRandomBetween(currentLow.current, currentHigh.current, currentGuess);
         setCurrentGuess(nextNumber);
-        setPastGuesses(curPastGuesses => [nextNumber, ...curPastGuesses]);
+        setPastGuesses(curPastGuesses => [nextNumber.toString(), ...curPastGuesses]);
     };
 
     return (
@@ -82,9 +88,15 @@ const GameScreen = props => {
                 </MainButton>
             </Card>
             <View style={styles.listContainer}>
-                <ScrollView contentContainerStyle={styles.list}>
-                    {pastGuesses.map((guess, index) => renderListItem(guess, pastGuesses.length - index))}
-                </ScrollView>
+                {/* Now, in the bind function we can bind every parameter we want as the first parameter. 
+                Then the react will add the parameters that should be added by default, like the ItemData 
+                parameter which hold the item and the index attributes.
+                The first value from the bind function can also be null. */}
+                <FlatList
+                    keyExtractor={(item) => item}
+                    data={pastGuesses}
+                    renderItem={renderListItem.bind(this, pastGuesses.length)}
+                    contentContainerStyle={styles.list} />
             </View>
         </View>
     );
@@ -111,14 +123,13 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: "60%",
+        width: "100%",
     },
     listContainer: {
-        width: '80%',
+        width: '60%',
         flex: 1
     },
     list: {
-        alignItems: 'center',
         justifyContent: 'flex-end',
         flexGrow: 1
     }
