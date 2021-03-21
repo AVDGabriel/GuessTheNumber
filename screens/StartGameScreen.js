@@ -6,7 +6,9 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     Alert,
-    Dimensions
+    Dimensions,
+    ScrollView,
+    KeyboardAvoidingView
 } from "react-native";
 import Card from "../components/Card";
 import Colors from '../constants/colors'
@@ -15,6 +17,7 @@ import NumberContainer from "../components/NumberContainer";
 import BodyText from "../components/BodyText";
 import TitleText from "../components/TitleText";
 import MainButton from '../components/MainButton';
+import { ScrollViewComponent } from "react-native";
 
 const StartGameScreen = props => {
     const [enteredValue, setEnteredValue] = useState('');
@@ -59,41 +62,47 @@ const StartGameScreen = props => {
     };
 
     return (
-        //TouchableWithoutFeedback is used with the onPress event to close the keyboard 
-        //whenever the user clicks outside of an inputText.
-        <TouchableWithoutFeedback onPress={() => {
-            Keyboard.dismiss();
-        }}>
-            <View style={styles.screen}>
-                <TitleText style={styles.title}>
-                    Start a new Game!
+        <ScrollView>
+            {/* Use this component if you want to be sure that the keyboard never 
+            overlayes the input you are typing in. */}
+            <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={30}>
+                {/* TouchableWithoutFeedback is used with the onPress event to close the keyboard 
+        whenever the user clicks outside of an inputText. */}
+                <TouchableWithoutFeedback onPress={() => {
+                    Keyboard.dismiss();
+                }}>
+                    <View style={styles.screen}>
+                        <TitleText style={styles.title}>
+                            Start a new Game!
                     </TitleText>
-                <Card style={styles.inputContainer}>
-                    <BodyText>
-                        Select a number
+                        <Card style={styles.inputContainer}>
+                            <BodyText>
+                                Select a number
                     </BodyText>
-                    <Input style={styles.input}
-                        blurOnSubmit
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        keyboardType="numeric"
-                        maxLength={2}
-                        onChangeText={numberInputHandler}
-                        value={enteredValue} />
-                    <View style={styles.buttonContainer}>
-                        <View style={{ ...styles.button, ...{ marginRight: 3 } }}>
-                            <Button title='Reset' onPress={resetInputHandler}
-                                color={Colors.accent} />
-                        </View>
-                        <View style={styles.button}>
-                            <Button title='Confirm' onPress={confirmInputHandler}
-                                color={Colors.primary} />
-                        </View>
+                            <Input style={styles.input}
+                                blurOnSubmit
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                keyboardType="numeric"
+                                maxLength={2}
+                                onChangeText={numberInputHandler}
+                                value={enteredValue} />
+                            <View style={styles.buttonContainer}>
+                                <View style={{ ...styles.button, ...{ marginRight: 3 } }}>
+                                    <Button title='Reset' onPress={resetInputHandler}
+                                        color={Colors.accent} />
+                                </View>
+                                <View style={styles.button}>
+                                    <Button title='Confirm' onPress={confirmInputHandler}
+                                        color={Colors.primary} />
+                                </View>
+                            </View>
+                        </Card>
+                        {confirmedOutput}
                     </View>
-                </Card>
-                {confirmedOutput}
-            </View>
-        </TouchableWithoutFeedback>
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
+        </ScrollView>
     );
 };
 
