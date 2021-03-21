@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     View,
     StyleSheet,
@@ -17,12 +17,12 @@ import NumberContainer from "../components/NumberContainer";
 import BodyText from "../components/BodyText";
 import TitleText from "../components/TitleText";
 import MainButton from '../components/MainButton';
-import { ScrollViewComponent } from "react-native";
 
 const StartGameScreen = props => {
     const [enteredValue, setEnteredValue] = useState('');
     const [confirmed, setConfirmed] = useState(false);
     const [selectedNumber, setSelectedNumber] = useState();
+    const [buttonWidth, setButtonwidth] = useState(Dimensions.get('window').width / 4);
 
     const numberInputHandler = inputText => {
         //Replace all non number values with an empty string.      
@@ -33,6 +33,18 @@ const StartGameScreen = props => {
         setEnteredValue('');
         setConfirmed(false);
     };
+
+    useEffect(() => {
+        const updateLayout = () => {
+            setButtonwidth(Dimensions.get('window').width / 4);
+        };
+
+        Dimensions.addEventListener("change", updateLayout);
+
+        return () => {
+            Dimensions.removeEventListener('change', updateLayout);
+        };
+    });
 
     const confirmInputHandler = () => {
         const chosenNumber = parseInt(enteredValue);
@@ -88,11 +100,11 @@ const StartGameScreen = props => {
                                 onChangeText={numberInputHandler}
                                 value={enteredValue} />
                             <View style={styles.buttonContainer}>
-                                <View style={{ ...styles.button, ...{ marginRight: 3 } }}>
+                                <View style={{ marginRight: 3, width: buttonWidth }}>
                                     <Button title='Reset' onPress={resetInputHandler}
                                         color={Colors.accent} />
                                 </View>
-                                <View style={styles.button}>
+                                <View style={{ width: buttonWidth }}>
                                     <Button title='Confirm' onPress={confirmInputHandler}
                                         color={Colors.primary} />
                                 </View>
@@ -119,7 +131,6 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         width: "80%",
-        // maxWidth: '80%',
         maxWidth: '95%',
         minWidth: 300,
         alignItems: 'center'
@@ -129,10 +140,6 @@ const styles = StyleSheet.create({
         width: '100%',
         justifyContent: 'space-between',
         paddingHorizontal: 15
-    },
-    button: {
-        // flex: 1
-        width: Dimensions.get('window').width / 4
     },
     input: {
         width: '100%',
