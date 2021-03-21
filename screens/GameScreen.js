@@ -43,6 +43,20 @@ const GameScreen = props => {
     const [pastGuesses, setPastGuesses] = useState([initialGuess.toString()]);
     const currentLow = useRef(1);
     const currentHigh = useRef(100);
+    const [availableDeviceWidth, setAvailableDeviceWidth] = useState(Dimensions.get('window').width);
+    const [availableDeviceHeight, setAvailableDeviceHeight] = useState(Dimensions.get('window').height);
+
+    useEffect(() => {
+        const updateLayout = () => {
+            setAvailableDeviceHeight(Dimensions.get('window').height);
+            setAvailableDeviceWidth(Dimensions.get('window').width);
+        };
+
+        Dimensions.addEventListener('change', updateLayout);
+        return () => {
+            Dimensions.removeEventListener('change', updateLayout);
+        };
+    });
 
     // useEffect hook is called after every render cycle.
     useEffect(() => {
@@ -73,8 +87,40 @@ const GameScreen = props => {
     };
 
     let listContainerStyle = styles.listContainer;
-    if (Dimensions.get('window').width < 500) {
+    if (availableDeviceWidth < 500) {
         listContainerStyle = styles.listContainerBig;
+    }
+
+    if (availableDeviceHeight < 500) {
+        return (
+            <View style={styles.screen}>
+                <Text style={DefaultStyles.title}>
+                    Oponent's guess
+            </Text>
+                <View style={styles.controls}>
+                    <MainButton onPress={() => nextGuessHandler('lower')}>
+                        <Ionicons name='md-remove' size={24} color='white' />
+                    </MainButton>
+                    <NumberContainer>
+                        {currentGuess}
+                    </NumberContainer>
+                    <MainButton onPress={() => nextGuessHandler('greater')}>
+                        <Ionicons name='md-add' size={24} color='white' />
+                    </MainButton>
+                </View>
+                <View style={listContainerStyle}>
+                    {/* Now, in the bind function we can bind every parameter we want as the first parameter. 
+                Then the react will add the parameters that should be added by default, like the ItemData 
+                parameter which hold the item and the index attributes.
+                The first value from the bind function can also be null. */}
+                    <FlatList
+                        keyExtractor={(item) => item}
+                        data={pastGuesses}
+                        renderItem={renderListItem.bind(this, pastGuesses.length)}
+                        contentContainerStyle={styles.list} />
+                </View>
+            </View>
+        );
     }
 
     return (
@@ -142,6 +188,12 @@ const styles = StyleSheet.create({
     list: {
         justifyContent: 'flex-end',
         flexGrow: 1
+    },
+    controls: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        width: '80%',
+        alignItems: 'center'
     }
 });
 
