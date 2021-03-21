@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Dimensions, Image, Text, ScrollView } from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Dimensions,
+    Image,
+    Text,
+    ScrollView
+} from 'react-native';
 import BodyText from '../components/BodyText';
 import TitleText from '../components/TitleText';
 import Colors from '../constants/colors';
