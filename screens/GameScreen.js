@@ -5,6 +5,7 @@ import Card from '../components/Card';
 import DefaultStyles from '../constants/default-styles';
 import MainButton from '../components/MainButton';
 import { Ionicons } from '@expo/vector-icons';
+import { ScrollView } from 'react-native';
 
 const generateRandomBetween = (min, max, exclude) => {
     min = Math.ceil(min);
@@ -21,16 +22,17 @@ const GameScreen = props => {
     //Object destructuring.
     const { userChoice, onGameOver } = props;
 
+    const initialGuess = generateRandomBetween(1, 100, userChoice);
     const [currentGuess, setCurrentGuess] =
-        useState(generateRandomBetween(1, 100, userChoice));
-    const [rounds, setRounds] = useState(0);
+        useState(initialGuess);
+    const [pastGuesses, setPastGuesses] = useState([initialGuess]);
     const currentLow = useRef(1);
     const currentHigh = useRef(100);
 
     // useEffect hook is called after every render cycle.
     useEffect(() => {
         if (currentGuess === userChoice) {
-            onGameOver(rounds);
+            onGameOver(pastGuesses.length);
         }
     },
         //Whenever every one of these props change, the useEffect hook is changed.
@@ -48,11 +50,11 @@ const GameScreen = props => {
             currentHigh.current = currentGuess;
         }
         else {
-            currentLow.current = currentGuess;
+            currentLow.current = currentGuess + 1;
         }
         const nextNumber = generateRandomBetween(currentLow.current, currentHigh.current, currentGuess);
         setCurrentGuess(nextNumber);
-        setRounds(curRounds => curRounds + 1);
+        setPastGuesses(curPastGuesses => [nextNumber, ...curPastGuesses]);
     };
 
     return (
@@ -71,6 +73,9 @@ const GameScreen = props => {
                     <Ionicons name='md-add' size={24} color='white' />
                 </MainButton>
             </Card>
+            <ScrollView>
+                {pastGuesses.map(guess => <View key={guess}><Text>{guess}</Text></View>)}
+            </ScrollView>
         </View>
     );
 };
