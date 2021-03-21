@@ -91,34 +91,30 @@ const GameScreen = props => {
         listContainerStyle = styles.listContainerBig;
     }
 
+    let gameControls = (
+        <React.Fragment>
+            <NumberContainer>{currentGuess}</NumberContainer>
+            <Card style={styles.buttonContainer}>
+                <MainButton onPress={nextGuessHandler.bind(this, 'lower')}>
+                    <Ionicons name="md-remove" size={24} color="white" />
+                </MainButton>
+                <MainButton onPress={nextGuessHandler.bind(this, 'greater')}>
+                    <Ionicons name="md-add" size={24} color="white" />
+                </MainButton>
+            </Card>
+        </React.Fragment>
+    );
+
     if (availableDeviceHeight < 500) {
-        return (
-            <View style={styles.screen}>
-                <Text style={DefaultStyles.title}>
-                    Oponent's guess
-            </Text>
-                <View style={styles.controls}>
-                    <MainButton onPress={() => nextGuessHandler('lower')}>
-                        <Ionicons name='md-remove' size={24} color='white' />
-                    </MainButton>
-                    <NumberContainer>
-                        {currentGuess}
-                    </NumberContainer>
-                    <MainButton onPress={() => nextGuessHandler('greater')}>
-                        <Ionicons name='md-add' size={24} color='white' />
-                    </MainButton>
-                </View>
-                <View style={listContainerStyle}>
-                    {/* Now, in the bind function we can bind every parameter we want as the first parameter. 
-                Then the react will add the parameters that should be added by default, like the ItemData 
-                parameter which hold the item and the index attributes.
-                The first value from the bind function can also be null. */}
-                    <FlatList
-                        keyExtractor={(item) => item}
-                        data={pastGuesses}
-                        renderItem={renderListItem.bind(this, pastGuesses.length)}
-                        contentContainerStyle={styles.list} />
-                </View>
+        gameControls = (
+            <View style={styles.controls}>
+                <MainButton onPress={nextGuessHandler.bind(this, 'lower')}>
+                    <Ionicons name="md-remove" size={24} color="white" />
+                </MainButton>
+                <NumberContainer>{currentGuess}</NumberContainer>
+                <MainButton onPress={nextGuessHandler.bind(this, 'greater')}>
+                    <Ionicons name="md-add" size={24} color="white" />
+                </MainButton>
             </View>
         );
     }
@@ -128,17 +124,7 @@ const GameScreen = props => {
             <Text style={DefaultStyles.title}>
                 Oponent's guess
             </Text>
-            <NumberContainer>
-                {currentGuess}
-            </NumberContainer>
-            <Card style={styles.buttonContainer}>
-                <MainButton onPress={() => nextGuessHandler('lower')}>
-                    <Ionicons name='md-remove' size={24} color='white' />
-                </MainButton>
-                <MainButton onPress={() => nextGuessHandler('greater')}>
-                    <Ionicons name='md-add' size={24} color='white' />
-                </MainButton>
-            </Card>
+            {gameControls}
             <View style={listContainerStyle}>
                 {/* Now, in the bind function we can bind every parameter we want as the first parameter. 
                 Then the react will add the parameters that should be added by default, like the ItemData 
@@ -163,7 +149,6 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        marginTop: Dimensions.get('window').height > 600 ? 20 : 5,
         width: 400,
         maxWidth: '90%'
     },
