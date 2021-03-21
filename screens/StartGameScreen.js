@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import {
     View,
     StyleSheet,
-    Text,
     Button,
     TouchableWithoutFeedback,
     Keyboard,
-    Alert
+    Alert,
+    Dimensions
 } from "react-native";
 import Card from "../components/Card";
 import Colors from '../constants/colors'
@@ -122,7 +122,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15
     },
     button: {
-        flex: 1
+        // flex: 1
+        width: Dimensions.get('window').width / 4
     },
     input: {
         width: '100%',
